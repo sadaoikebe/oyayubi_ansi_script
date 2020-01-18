@@ -1,0 +1,3115 @@
+
+
+# 2007 Hiroyuki Ogasawara
+# vim:ts=4 sw=4:
+# em1key script file
+# http://www.vector.co.jp/authors/VA004474/
+
+# 「親指シフト」用定義ファイル
+
+# このファイルはバージョン更新時に上書きされる可能性があります。
+# 書き換えて使っている場合は更新前に必ずバックアップを取っておくように
+# してください。
+
+# vim:ts=4 sw=4:
+#------------------------------------------------------------------------------
+# system 用共通シンボル定義ヘッダ
+#------------------------------------------------------------------------------
+# ここは書き換えないでください
+# system ヘッダ部分の最終更新日 2007/05/15
+# script の詳しい説明はこちらです。
+# http://flatlib.main.jp/dench/vec/more/em1keyscript.txt
+
+# opcode
+#define	CODEEXIT		0
+define	EXIT			1
+define	RETURN			2
+define	JUMP			3
+define	JUMPALL			4
+define	LABEL			5
+define	CALL			6
+define	CALLVAR			7
+define	SETMODIFIER		8
+define	SENDKEY			9
+define	SENDVAR			10
+define	RAWDOWN			11
+define	RAWUP			12
+define	EXEC			13
+define	WINCMD			14
+define	ROTATE			15
+define	CLEARALLSTATE	16
+define	SAVETIME		17
+define	SETDIFFTIME		18
+define	SETGSTATE		19
+define	RESETGSTATE		20
+define	ALLOCVSTATE		21
+define	SETVSTATE		22
+define	RESETVSTATE		23
+define	SETSYSFLAG		24
+define	RESETSYSFLAG	25
+define	TESTSYSFLAG		26
+define	TESTGSTATE		27
+define	TESTVSTATE		28
+define	DOWNVAR			29
+define	UPVAR			30
+#
+define	SETVAR0			32
+define	SETVAR1			33
+define	SETVAR2			34
+define	SETVAR3			35
+define	LOADVAR			36
+define	STOREVAR		37
+define	LOAD			38
+#define	STRINGDATA		39
+#define	STRINGID		40
+define	MESSAGE			41
+define	SETTABLE		42
+define	LOADIVAR		43
+define	STOREIVAR		44
+define	PUSHVAR			45
+define	POPVAR			46
+define	PUSHIMM			47
+define	IF_DOWN			48
+define	IF_UP			49
+define	IF_DIFFTIME		50
+define	IF_TRUE			51
+define	IF_FALSE		52
+define	IF_VSTATE0		53
+define	IF_VSTATE1		54
+define	IF_VSTATE2		55
+define	IF_VSTATE3		56
+define	IF_CTRL			57
+define	IF_SHIFT		58
+define	IF_RWIN			59
+define	IF_GSTATE3		60
+define	CMP_EQ			61
+define	CMP_LT			62
+define	CMP_GT			63
+define	ADDVAR			64
+define	SUBVAR			65
+define	ANDVAR			66
+define	ORVAR			67
+define	XORVAR			68
+define	ADD				69
+define	SUB				70
+define	AND				71
+define	OR				72
+define	XOR				73
+define	MULVAR			74
+define	DIVVAR			75
+define	MODVAR			76
+define	SLVAR			77
+define	SRVAR			78
+define	CMPVAR_EQ		79
+define	CMPVAR_LT		80
+define	CMPVAR_GT		81
+define	CALLVARDEF		82
+define	CALLVAREXT		83
+define	SETHELP			84
+
+# constant
+define	TRUE			1
+define	FALSE			0
+
+# GSTATE
+define	STATE_CTRL		0
+define	STATE_SHIFT		1
+define	STATE_RWIN		2
+define	STATE_KANATABLE	8
+
+# VSTATE
+define	VSTATE_0		0
+define	VSTATE_1		1
+define	VSTATE_2		2
+
+# GVAR
+define	GVAR_SAVETIME	33
+define	GVAR_DIFFTIME	34
+define	GVAR_MODIFIER	35
+define	GVAR_KEYCODE	37
+define	GVAR_EVENTTIME	38
+define	GVAR_SCANCODE	39
+define	GVAR_TABLE		40
+
+# Modifier
+define	MOD_CTRL		0x01
+define	MOD_SHIFT		0x02
+define	MOD_RWIN		0x10
+define	MOD_KANA		0x20
+define	MOD_KANASHIFT	0x22
+
+# Function Table
+define	TABLE_FUNC		1
+define	TABLE_DEFAULT	2
+define	TABLE_EXT		4
+define	TABLE_KANA		4
+define	TABLE_ALLMODE	6
+
+define	TABLEID_FUNC	0
+define	TABLEID_DEFAULT	1
+define	TABLEID_EXT		2
+
+# SystemFlag
+define	SYSFLAG_CTRLSWAP	0
+define	SYSFLAG_ESCSWAP		1
+define	SYSFLAG_IMESW		2
+define	SYSFLAG_SCANTEST	3
+define	SYSFLAG_NAVIMODE	4
+define	SYSFLAG_IME			16
+define	SYSFLAG_SCANVALID	17
+define	SYSFLAG_SCANANY		18
+
+# WINCMD
+define	WINCMD_CLOSE		0x41
+define	WINCMD_ALTTAB		0x42
+define	WINCMD_IMESW		0x43
+define	WINCMD_GETIMEMODE	0x44
+
+# KeyCode
+define	VK_BACK			0x08	# [BS]
+define	VK_TAB			0x09	# [TAB]
+define	VK_CLEAR		0x0c
+define	VK_RETURN		0x0d	# [Enter]
+define	VK_SHIFT		0x10	# [Shift]
+define	VK_CONTROL		0x11	# [Ctrl]
+define	VK_MENU			0x12	# [ALT](CE)
+define	VK_PAUSE		0x13
+define	VK_CAPITAL		0x14
+define	VK_KANA			0x15
+define	VK_KANJI		0x19	# [Kanji]
+define	VK_ESCAPE		0x1b	# [ESC]
+define	VK_CONVERT		0x1c	# [変換]
+define	VK_NCONVERT		0x1d	# [無変換]
+define	VK_SPACE		0x20	# [Space]
+define	VK_PRIOR		0x21	# [PageUp]
+define	VK_NEXT			0x22	# [PageDown]
+define	VK_END			0x23	# [End]
+define	VK_HOME			0x24	# [Home]
+define	VK_LEFT			0x25	# [←]
+define	VK_UP			0x26	# [↑]
+define	VK_RIGHT		0x27	# [→]
+define	VK_DOWN			0x28	# [↓]
+define	VK_SELECT		0x29
+define	VK_PRINT		0x2a
+define	VK_EXECUTE		0x2b
+define	VK_SNAPSHOT		0x2c	# [PrintScreen]
+define	VK_INSERT		0x2d
+define	VK_DELETE		0x2e	# [Del]
+define	VK_HELP			0x2f
+# '0'～'9'  'A'～'Z'  はそのまま記述します
+define	VK_LWIN			0x5b	# [Win]
+define	VK_RWIN			0x5c	# RWIN
+define	VK_F1			0x70	# 左SoftKey
+define	VK_F2			0x71	# 右SoftKey
+define	VK_F3			0x72
+define	VK_F4			0x73
+define	VK_F5			0x74
+define	VK_F6			0x75	# RWIN+F6 = [OK]
+define	VK_F7			0x76	# RWIN+F7 = [Moji]
+define	VK_F8			0x77
+define	VK_F9			0x78
+define	VK_F10			0x79
+define	VK_F11			0x7a
+define	VK_F12			0x7b
+define	VK_F13			0x7c
+define	VK_F14			0x7d
+define	VK_F15			0x7e
+define	VK_F16			0x7f
+define	VK_F17			0x80
+define	VK_F18			0x81
+define	VK_F19			0x82
+define	VK_F20			0x83
+define	VK_F21			0x84
+define	VK_F22			0x85
+define	VK_F23			0x86
+define	VK_F24			0x87
+define	VK_NUMLOCK		0x90
+define	VK_SCROLL		0x91	# [ScrollLock]
+define	VK_LSHIFT		0xa0	# pc only
+define	VK_RSHIFT		0xa1	# pc only
+define	VK_LCONTROL		0xa2	# pc only
+define	VK_RCONTROL		0xa3	# pc only
+define	VK_LMENU		0xa4	# [ALT]
+define	VK_RMENU		0xa5
+define	VK_OEM_1		0xba	# PC [:*]
+define	VK_OEM_PLUS		0xbb	# PC [;+]
+define	VK_OEM_MINUS	0xbd	# PC [-=]
+define	VK_OEM_7		0xde	# PC [^~]
+#define	VK_SEMICOLON	0xbb	# PC [;+] (CE互換用)
+define	VK_EQUAL		0xde	# PC [^~] (CE互換用)
+define	VK_SEMICOLON	0xba	# PC [:*] (CE互換用)
+define	VK_HYPHEN		0xbd	# [-=]
+define	VK_COMMA		0xbc	# [,;]
+define	VK_PERIOD		0xbe	# [.:]
+define	VK_SLASH		0xbf	# [/?]
+define	VK_BACKQUOTE	0xc0	# [@`]
+define	VK_APP1			0xc1
+define	VK_APP2			0xc2
+define	VK_APP3			0xc3
+define	VK_APP4			0xc4
+define	VK_APP5			0xc5
+define	VK_APP6			0xc6
+define	VK_LBRACKET		0xdb	# [[{]
+define	VK_RBRACKET		0xdd
+define	VK_BACKSLASH	0xdc	# [\|]
+#define	VK_APOSTROPHE	0xde	#
+define	VK_OFF			0xdf	#
+define	VK_OEM_102		0xe2	# [ _]
+define	VK_DBE_ALPHANUMERIC	0xf0	# [英数/Caps]
+define	VK_DBE_KATAKANA	0xf1	#
+define	VK_DBE_HIRAGANA	0xf2	# [かな]
+define	VK_DBE_SBCSCHAR	0xf3	# [半]
+define	VK_DBE_DBCSCHAR	0xf4	# [全]
+define	VK_DBE_ROMAN	0xf5	#
+define	VK_DBE_NOROMAN	0xf6	#
+
+#------------------------------------------------------------------------------
+# system 用シンボル定義ヘッダここまで
+#------------------------------------------------------------------------------
+
+
+
+#------------------------------------------------------------------------------
+# ここからスクリプトのプログラム開始
+#------------------------------------------------------------------------------
+
+# vim:ts=4 sw=4:
+#-----------------------------------------------------------------------------
+# 「親指シフト」入力の定義
+#-----------------------------------------------------------------------------
+# v1.46 2009/10/09
+#
+# 詳細はこちら
+#   http://hp.vector.co.jp/authors/VA004474/wince/soft4.html#oyayubi
+#-----------------------------------------------------------------------------
+# デフォルトの割り当て
+#   [無変換] = 左親指シフトキー
+#   [変換]   = 右親指シフトキー
+#
+# 自由にカスタマイズできます。
+
+#---------------------------------------------
+# キーボードレイアウト対応図
+#---------------------------------------------
+#---------------------------------------------
+# 英数時
+#---------------------------------------------
+# 1  2  3  4  5    6  7  8  9  0  -  ^  \  BS
+#  q  w  e  r  t    y  u  i  o  p  @  [
+#   a  s  d  f  g    h  j  k  l  ;  :  ]
+#    z  x  c  v  b    n  m  ,  .  / ..
+#---------------------------------------------
+# そのまま押した場合
+#---------------------------------------------
+# １ ２ ３ ４ ５   ６ ７ ８ ９ ０ ー ＾ ￥ BS
+#  。 か た こ さ   ら ち く つ ， 、 「
+#   う し て け せ   は と き い ん ； 」
+#    ． ひ す ふ へ   め そ ね ほ ・ ..
+#---------------------------------------------
+# 親指シフト時
+#---------------------------------------------
+# ？ ／ ～ 「 」   ［ ］ （ ） .. .. .. .. ..
+#  ぁ え り ゃ れ   よ に る ま ぇ ＠ ゜
+#   を あ な ゅ も   み お の ょ っ .. ..
+#    ぅ ー ろ や ぃ   ぬ ゆ む わ ぉ ..
+#---------------------------------------------
+# クロスシフト時
+#---------------------------------------------
+# ？ ／ ～ 「 」   ［ ］ （ ） .. .. .. .. ..
+#  ゜ が だ ご ざ   ぱ ぢ ぐ づ ぴ .. ..
+#   ヴ じ で げ ぜ   ば ど ぎ ぽ .. .. ..
+#    .. び ず ぶ べ   ぷ ぞ ぺ ぼ ゛ ..
+#---------------------------------------------
+# 小指シフト
+#---------------------------------------------
+# ！ ” ＃ ＄ ％   ＆ ’ （ ） .. ＝ ～ ｜ ..
+#  Ｑ Ｗ Ｅ Ｒ Ｔ   Ｙ Ｕ Ｉ Ｏ Ｐ ‘ ｛
+#   Ａ Ｓ Ｄ Ｆ Ｇ   ぱ Ｊ Ｋ Ｌ ＋ ＊ ｝
+#    Ｚ ぴ Ｃ ぷ ぺ   Ｎ Ｍ ＜ ぽ ？ ＿
+#
+
+#------------------------------------------------------------------------------
+# かなテーブル
+#------------------------------------------------------------------------------
+
+# 一般キーに割り当てられる機能、文字
+define	_kana_A		0x80
+define	_kana_I		0x81
+define	_kana_U		0x82
+define	_kana_E		0x83
+define	_kana_O		0x84
+define	_kana_XA	0x85
+define	_kana_XI	0x86
+define	_kana_XU	0x87
+define	_kana_XE	0x88
+define	_kana_XO	0x89
+define	_kana_VU	0x8a
+define	_kana_KA	0x8b
+define	_kana_KI	0x8c
+define	_kana_KU	0x8d
+define	_kana_KE	0x8e
+define	_kana_KO	0x8f
+define	_kana_GA	0x90
+define	_kana_GI	0x91
+define	_kana_GU	0x92
+define	_kana_GE	0x93
+define	_kana_GO	0x94
+define	_kana_SA	0x95
+define	_kana_SI	0x96
+define	_kana_SU	0x97
+define	_kana_SE	0x98
+define	_kana_SO	0x99
+define	_kana_ZA	0x9a
+define	_kana_ZI	0x9b
+define	_kana_ZU	0x9c
+define	_kana_ZE	0x9d
+define	_kana_ZO	0x9e
+define	_kana_TA	0x9f
+define	_kana_TI	0xa0
+define	_kana_TU	0xa1
+define	_kana_TE	0xa2
+define	_kana_TO	0xa3
+define	_kana_DA	0xa4
+define	_kana_DI	0xa5
+define	_kana_DU	0xa6
+define	_kana_DE	0xa7
+define	_kana_DO	0xa8
+define	_kana_NA	0xa9
+define	_kana_NI	0xaa
+define	_kana_NU	0xab
+define	_kana_NE	0xac
+define	_kana_NO	0xad
+define	_kana_HA	0xae
+define	_kana_HI	0xaf
+define	_kana_HU	0xb0
+define	_kana_HE	0xb1
+define	_kana_HO	0xb2
+define	_kana_BA	0xb3
+define	_kana_BI	0xb4
+define	_kana_BU	0xb5
+define	_kana_BE	0xb6
+define	_kana_BO	0xb7
+define	_kana_PA	0xb8
+define	_kana_PI	0xb9
+define	_kana_PU	0xba
+define	_kana_PE	0xbb
+define	_kana_PO	0xbc
+define	_kana_MA	0xbd
+define	_kana_MI	0xbe
+define	_kana_MU	0xbf
+define	_kana_ME	0xc0
+define	_kana_MO	0xc1
+define	_kana_RA	0xc2
+define	_kana_RI	0xc3
+define	_kana_RU	0xc4
+define	_kana_RE	0xc5
+define	_kana_RO	0xc6
+define	_kana_YA	0xc7
+define	_kana_YU	0xc8
+define	_kana_YO	0xc9
+define	_kana_XYA	0xca
+define	_kana_XYU	0xcb
+define	_kana_XYO	0xcc
+define	_kana_XTU	0xcd
+define	_kana_WA	0xce
+define	_kana_WO	0xcf
+define	_kana_NN	0xd0
+define	_kana_TYOU		0xd1	# ー
+define	_kana_DAKU		0xd2	# ゛
+define	_kana_HDAKU		0xd3	# ゜
+define	_kana_MARU		0xd4	# 。
+define	_kana_TEN		0xd5	# 、
+define	_kana_PERIOD	0xd6	# .
+define	_kana_COMMA		0xd7	# ,
+define	_kana_SLASH		0xd8	# /
+define	_kana_HATENA	0xd9	# ？
+define	_kana_LKAGI		0xda	# 「
+define	_kana_RKAGI		0xdb	# 」
+define	_kana_TILDE		0xdc	# ～
+define	_kana_LBRA		0xdd	# （
+define	_kana_RBRA		0xde	# ）
+define	_kana_LSBRA		0xdf	# [
+define	_kana_RSBRA		0xe0	# ]
+#define	_kana_LT		0xe1	# ＜
+#define	_kana_GT		0xe2	# ＞
+define	_kana_LCBRA		0xe1	# {
+define	_kana_RCBRA		0xe2	# }
+define	_kana_BS	0xee	# [BS]
+define	_kana_ESC	0xef	# [ESC]
+define	_kana_NOP	0xf0	# 何もしない
+define	_kana_ORG	0xf1	# 元のキーのコードを発行する
+define	_kana_SHORG	0xf2	# 元のキーのコードを SHIFT 付きで発行する
+
+define	_kana_PREV 0xe3
+define	_kana_SHPRV 0xe4
+
+define	_kana_NINE 0xe5
+define	_kana_ZERO 0xe6
+define	_kana_MINUS 0xe7
+define	_kana_EQUAL 0xe8
+
+# 親指シフトキー単押しに割り当てられる機能
+define	_os_NOP		_kana_NOP	# 何もしない
+define	_os_ORG		0x70		# 元のキーとして機能する
+define	_os_IMESW	0x71		# IME切り替えキーとして機能する(CEのみ)
+define	_os_HENKAN	0x72		# 変換キーとして機能する
+define	_os_CUSTOM	0x73		# 任意のアクションを実行する
+
+#------------------------------------------------------------------------------
+# サンプル設定 (作者の設定等)
+#------------------------------------------------------------------------------
+
+define	_MYCUSTOM_CE_	0	# WindowsMobile5.0(ZRO3es/EM・ONE)+ 親指化パピヨン
+define	_MYCUSTOM_PC_	0	# WindowsVista (PC)
+define	_MYCUSTOM_PM_	0	# WindowsVista5.0 Papillon改 Mode
+
+ifsw _MYCUSTOM_CE_
+define	LOS_KEYCODE1		VK_MENU	# [ALT]
+define	LOS_SHARE_FUNC1		_os_NOP
+define	LOS_ALT_PATCH_ENABLE1	TRUE
+define	ROS_KEYCODE1		VK_SPACE
+define	LOS_KEYCODE2		VK_NCONVERT
+define	ROS_KEYCODE2		VK_CONVERT
+define	CSW_CTRLSWAP_ENABLE	TRUE
+define	CSW_ESCSWAP_ENABLE	TRUE
+define	CSW_SUBST_PAUSE_OK	TRUE
+define	CSW_COUNT			TRUE
+define	CMAP_PRTSCR_KEYCODE	VK_DBE_HIRAGANA
+define	CMAP_SCRLCK_KEYCODE	VK_CONVERT
+define	CMAP_DF_P			_kana_TEN
+define	CMAP_DF_Z			_kana_MARU
+define	CSW_OASYSSHIFT_ENABLE	FALSE
+endif
+
+ifsw _MYCUSTOM_PC_
+define	CSW_COUNT		TRUE
+define	CMAP_DF_P		_kana_TEN
+define	CMAP_DF_Z		_kana_MARU
+define	CSW_OASYSSHIFT_ENABLE	FALSE
+endif
+
+ifsw _MYCUSTOM_PM_
+define	LOS_KEYCODE1		VK_MENU	# [ALT]
+define	LOS_SHARE_FUNC1		_os_NOP
+define	LOS_ALT_PATCH_ENABLE1	TRUE
+define	ROS_KEYCODE1		VK_SPACE
+define	LOS_KEYCODE2		VK_NCONVERT
+define	ROS_KEYCODE2		VK_CONVERT
+define	CSW_SUBST_PAUSE_OK	TRUE
+define	CMAP_PRTSCR_KEYCODE	VK_DBE_HIRAGANA
+define	CMAP_SCRLCK_KEYCODE	VK_CONVERT
+endif
+
+
+
+
+#------------------------------------------------------------------------------
+# カスタマイズ
+#------------------------------------------------------------------------------
+
+# 親指シフトキー
+define	LOS_KEYCODE1	VK_SPACE		# 左親指1 = スペース
+define	ROS_KEYCODE1	VK_RCONTROL		# 右親指1 = right ctrl
+
+# 追加親指シフトキー不要
+define	LOS_KEYCODE2	0				# 左親指2に割り当てるキーコード
+define	LOS_KEYCODE3	0				# 左親指3に割り当てるキーコード
+define	ROS_KEYCODE2	0				# 右親指2に割り当てるキーコード
+define	ROS_KEYCODE3	0				# 右親指3に割り当てるキーコード
+
+define	LOS_SHARE_FUNC1	_os_ORG		# 左親指シフトキー1 = スペース
+define	ROS_SHARE_FUNC1	_os_CUSTOM		# 右親指シフトキー1 = space
+
+# 複数親指シフトキーを指定する場合
+define	LOS_SHARE_FUNC2	_os_ORG		# 左親指シフトキー2
+define	LOS_SHARE_FUNC3	_os_ORG		# 左親指シフトキー3
+define	ROS_SHARE_FUNC2	_os_ORG		# 右親指シフトキー2
+define	ROS_SHARE_FUNC3	_os_ORG		# 右親指シフトキー3
+
+
+# ●親指シフトキー用 TIMEOUT 値の設定
+#  一般文字キーと分離するための TIMEOUT 値を設定します。(前方離値)
+#  0 で TIMEOUT なし、0以外で TIMEOUT あり(TIMEOUT時間)
+#   値は 40msec 単位 1=40msec、10=400msec、25=1000msec(1秒)
+define	OS_ATIMEOUT		0		# TIMEOUT 時間
+
+
+# ●WindowsMobile で左親指シフトキーに [ALT]キーを割り当てる場合 TRUE に
+#  してください。親指シフト化パピヨン(Papillon)向け設定。
+#  なお、現在 左親指シフトキー1 にのみ [ALT] を割り当て可能です。
+#  まだ PC では [ALT] 設定ではうまく動きません。
+define	LOS_ALT_PATCH_ENABLE1	FALSE
+
+
+# ●[:*]キーの設定
+#  次の行の値を TRUE にすると [:*] キーが [BS] になります。
+#  より厳密な OASYS 配列にしたい場合に指定してください。
+define	CSW_OASYSBS_ENABLE	TRUE
+
+
+# ●[]}]キーの設定
+#  次の行の値を TRUE にすると []}] キーが [ESC] になります。
+#  より厳密な OASYS 配列にしたい場合に指定してください。
+define	CSW_OASYSESC_ENABLE	FALSE
+
+
+# ●[[{]キーの設定
+#  [[{]キーを ゛(濁点) にするとより厳密な NICOLA 仕様になりますが、ローマ字
+#  入力に慣れているとカギ括弧のままの方が使いやすくなります。
+#    _kana_ORG   = 「       ローマ字入力に慣れている場合
+#    _kana_DAKU  = ゛(濁点) より厳密な NICOLA 仕様に合わせる場合はこちら
+define	CMAP_DF_LBRACKET	_kana_ORG
+
+
+# ●[P]キーの設定
+#  [P]キーを , (カンマ) にすると厳密な親指シフト仕様ですが、カンマを使わない
+#  場合は 、(読点) に設定することができます。(注意:IMEに依存します)
+#    _kana_COMMA = , (カンマ)
+#    _kana_TEN   = 、(読点)
+define	CMAP_DF_P		_kana_COMMA
+
+
+# ●[Z]キーの設定
+#  [Z]キーを . (ピリオド) にすると厳密な親指シフト仕様ですが、普段使わない
+#  場合は 。(句点) に設定することができます。(注意:IMEに依存します)
+#    _kana_PERIOD = . (ピリオド)
+#    _kana_MARU   = 。(読点)
+define	CMAP_DF_Z		_kana_PERIOD
+
+
+# ●小指SHIFTの設定
+#  小指シフトを使うと OASYS の伝統的に半濁点文字「ぱぴぷぺぽ」が入りますが
+#  NICOLA 仕様では無くても困りません。ローマ字入力に慣れていると A～Z や
+# 「＞」などの記号が入った方が便利かもしれません。ここで切り替えできます。
+#    TRUE  で OASYS 互換 (小指シフトを半濁音キーにする)
+#    FALSE で NICOLA のみ (小指シフトで A～Z や ＞ の入力が可能)
+define	CSW_OASYSSHIFT_ENABLE	FALSE
+
+
+# ※直接キー定義を書き換えるだけで、ここに無いキーのカスタム設定も全部
+#  自由にできます。
+
+
+# ● キーの入力数をカウント表示します(お得カウント)
+#  実際のタイプ数と、ローマ字入力換算のタイプ数、ローマ字入力と比べて何キー
+#  得したかを設定画面にリアルタイム表示します。
+#  原則として日本語キーの場合のみカウントします。記号は常に1としています。
+#  FALSE のときは一切メモリも増えず処理の負荷にもなりません。
+#  再起動や script の読み直しでリセットします。
+#    TRUE で有効、FALSE で無効となります。
+define	CSW_COUNT		FALSE
+
+#  何キー毎に表示をアップデートするか指定できます。
+#  1で毎回更新、2で2回に一度更新
+define	CVAL_COUNTUPDATE	1
+
+
+
+# ● ZERO3/EM・ONE 本体内蔵キーボードの [文字]キーで IME 切り替えを行う場合
+#  TRUE で有効、FALSE で無効 (WindowsMobileのみ)
+define	CSW_SUBST_MOJI_IMESW	TRUE
+
+
+# ● [Pause] を WindowsMobile の [OK] ボタンにします
+#  WindowsMobile + Papillon 等で便利
+#  TRUE で有効、FALSE で無効
+define	CSW_SUBST_PAUSE_OK		FALSE
+
+
+# ● [PrintScreen] を任意のキーに置き換えます
+#  WindowsMobile + Papillon 等で便利
+#  キーコードを定義します。0 で無効
+define	CMAP_PRTSCR_KEYCODE		0
+
+
+# ● [ScrollLock] を任意のキーに置き換えます
+#  WindowsMobile + Papillon 等で便利
+#  TRUE で有効、FALSE で無効
+define	CMAP_SCRLCK_KEYCODE		0
+
+
+# ● 外部キーボードで [Ctrl]/[CapsLock] の交換を行います (CEのみ)
+#  TRUE で有効、FALSE で無効
+define	CSW_CTRLSWAP_ENABLE		FALSE
+
+
+# ● 外部キーボードで [ESC]/[半/全] を交換します (CEのみ)
+#  TRUE で有効、FALSE で無効
+define	CSW_ESCSWAP_ENABLE		FALSE
+
+
+
+#------------------------------------------------------------------------------
+# カスタム用ワーク
+#------------------------------------------------------------------------------
+
+ifsw CSW_OASYSSHIFT_ENABLE
+	define	CMAP_SH_H		_kana_PA
+	define	CMAP_SH_X		_kana_PI
+	define	CMAP_SH_V		_kana_PU
+	define	CMAP_SH_B		_kana_PE
+	define	CMAP_SH_PERIOD	_kana_PO
+endif
+
+ifnsw CSW_OASYSSHIFT_ENABLE
+	define	CMAP_SH_H		_kana_SHORG
+	define	CMAP_SH_X		_kana_SHORG
+	define	CMAP_SH_V		_kana_SHORG
+	define	CMAP_SH_B		_kana_SHORG
+	define	CMAP_SH_PERIOD	_kana_SHORG
+endif
+
+#------------------------------------------------------------------------------
+# シンボル
+#------------------------------------------------------------------------------
+
+# 定義するテーブルの指定
+define	_TABLE_OS	TABLE_EXT
+
+# GlobalState ビット定義
+define	_gs_ISLEFT		16	# 左右どちらのキーか、関数に渡すための引数
+define	_gs_KEYBUFFER	17	# KeyBuffer にキーがあるかどうか
+define	_gs_OSBUFFER	18	# OSBuffer にキーがあるかどうか
+
+# LocalState ビット定義
+define	_vs_OSDOWN		0	# 親指シフトキーを押しているかどうか
+define	IF_OSDOWN		IF_VSTATE0	# 専用判定命令
+
+# Global変数 パラメータ渡し用
+define	_IN_DF_FUNC		0
+define	_IN_OS_FUNC		1
+define	_IN_CR_FUNC		2
+define	_IN_SH_FUNC		3
+
+# Global変数 ワーク
+define	_WK_VAR0		5
+define	_WK_VAR1		6
+define	_WK_VAR2		7
+define	_WK_VAR3		8
+define	_WK_VAR4		9
+define	_WK_COUNT		10
+define	_WK_RCOUNT		11
+define	_WK_UPDATE		12
+
+# Global変数 KeyBuffer キーバッファ
+define	_KB_ISLEFT		15	# 1=Left or 0=Right
+define	_KB_DF_FUNC		16	# 単独押しで実行する関数
+define	_KB_OS_FUNC		17	# 親指シフトで実行する関数
+define	_KB_CR_FUNC		18	# 親指クロスシフトで実行する関数
+define	_KB_SH_FUNC		19	# 小指シフトで実行する関数
+define	_KB_KEYCODE		20	# 元のキーコード
+define	_KB_TIME		21	# キーを押した時間
+
+# Global変数 OSBuffer 親指シフトバッファ
+define	_OB_ISLEFT		22	# 1=Left or 0=Right
+define	_OB_FUNC		23	# 単独押しで実行する関数
+define	_OB_KEYCODE		24	# 元のキーコード
+define	_OB_TIME		25	# キーを押した時間
+
+# 関数一覧
+define	_subPushKey		0x60	# 一般キーのバッファリング
+define	_subPushOS		0x61	# 親指シフトキーのバッファリング
+define	_subFlushKey	0x62	# 一般キーのみのバッファ発行
+define	_subFlushAll	0x63	# 全バッファの実行
+define	_subExecKey		0x64	# 一般文字キーの処理
+define	_subExecOS		0x65	# 親指シフトキーの処理
+define	_subLEFT		0x66
+define	_subRIGHT		0x67
+define	_subASCII		0x68
+define	_subSync		0x69	# 指定のキーコードを同期発行する(stack渡し)
+define	_subSyncKC		0x6a	# 本来のキーコードを同期発行する
+define	_subHelper		0x6b	# KEYDOWN のみリターンする
+define	_subCount		0x6d
+define	_subCount1		0x6e
+define	_subCount2		0x6f
+
+# アルゴリズムはこれだけ
+# ・文字キーが押されたらとりあえずバッファ(KeyBuffer)に入れる _subPushKey
+# ・親指シフトキーが押されたらとりあえずバッファ(OSBuffer)に入れる _subPushOS
+# ・文字が確定する条件になったらバッファを送信する _subFlushAll
+
+# 確定する条件は次のとおり
+# ・文字キーを離したとき
+# ・親指シフトキーを離したとき
+# ・KeyBuffer に文字がある状態でさらにキーが押されたとき(新たなバッファも発生)
+# ・OSBuffer にシフトキーがある状態で文字キーが押されたとき
+# ・OSBuffer にシフトキーがある状態で他の親指シフトキーが押されたとき(新たな
+#   OSバッファも発生)
+# ・親指シフト入力関連以外のキーが押されたとき(TAB,Enter,変換等)
+
+# OS→Key はすぐに確定するが
+# Key→OS は確定しないでバッファに入れるだけ
+
+# 特殊条件
+# ・KeyBuffer にも OSBuffer にもキーがある状態(PrevKey→OS→Key)で文字キーが
+#   押されると、OS がどちらにつくか切り分けが発生する。キーが押されたときの
+#   タイムスタンプで判定する。
+#      (1) 前の文字を PrevKey + OS で確定してからバッファリングする
+#      (2) 前の文字を単独で確定してから OS + Key で確定する
+# ・KeyBuffer に文字がある状態で親指シフトが押されたらバッファリングとなるが、
+#   時間差が TIMEOUT 時間を超えていれば単独文字とみなして先に確定する。
+
+# Key→OS は TIMEOUT 判定があるが
+# OS→Key は TIMEOUT 判定が無い
+
+#------------------------------------------------------------------------------
+# 初期化関数
+#-----------------------------------------------------------------------------
+
+# 初期化 起動時に呼ばれる
+func TABLE_FUNC	0
+	# 初期化
+	CLEARALLSTATE
+	WINCMD WINCMD_GETIMEMODE
+
+	# EMONE/ZERO3 の内蔵キーかどうかの判定を行います。これを off にすると
+	# すべてのキーボードで有効扱いになります。
+	SETSYSFLAG	SYSFLAG_SCANTEST
+
+	# 初期状態で使用するキーテーブルの選択
+	# TABLEID_DEFAULT にすると 親指シフト入力 が off になります。
+	SETTABLE	TABLEID_EXT
+
+	# タイトル＆ヘルプ設定
+	string	0	"oyayubiwm v1.46 「親指シフト」入力"
+	SETHELP		0
+	string	0	""
+	SETHELP		1
+	string	0	"★外部キーボードで親指シフト入力できます★"
+	SETHELP		2
+	string	0	"  [無変換]=左親指シフト [変換]=右親指シフト"
+	SETHELP		3
+	string	0	"キー設定は変更可能です。詳しくはマニュアルを!"
+	SETHELP		4
+	string	0	" http://www.vector.co.jp/authors/VA004474/"
+	SETHELP		5
+
+	ifsw CSW_COUNT
+		LOAD	0
+		STOREVAR	_WK_COUNT
+		STOREVAR	_WK_RCOUNT
+		STOREVAR	_WK_UPDATE
+	endif
+endfunc
+
+
+# SCANTEST は完全とは限りません。内蔵キーボードと ScanCode が重なる可能性が
+# あるので、もし誤動作する場合は次の関数のコメントを外して有効にしてください。
+# この場合 SCANTEST をしないので必ず動作しますが、内蔵キーボードも親指シフト
+# で置き換わってしまいます。WindowsMobile (CE) のみ。PC では不要です。
+#func TABLE_FUNC	1
+#	RESETSYSFLAG	SYSFLAG_SCANVALID
+#	SETSYSFLAG		SYSFLAG_SCANANY
+#	EXIT	FALSE
+#endfunc
+
+
+
+
+#------------------------------------------------------------------------------
+# カウント機能
+#------------------------------------------------------------------------------
+
+ifsw CSW_COUNT
+	func TABLE_FUNC _subCount
+			POPVAR	_WK_VAR3	# roma
+			LOADVAR	_WK_VAR3
+			ADDVAR	_WK_RCOUNT	# _WK_RCOUNT+= _WK_VAR3
+			LOAD	1
+			ADDVAR	_WK_COUNT	# _WK_COUNT+= 1
+			#
+			ADDVAR	_WK_UPDATE	# _WK_UPDATE+= 1
+			LOAD	CVAL_COUNTUPDATE
+			CMPVAR_GT	_WK_UPDATE	# CVAL_COUNTUPDATE > _WK_UPDATE
+			IF_TRUE	10
+			LOAD	0
+			STOREVAR	_WK_UPDATE
+			PUSHVAR	0
+			PUSHVAR	1
+			PUSHVAR	2
+			LOADVAR	_WK_COUNT
+			STOREVAR	0
+			LOADVAR	_WK_RCOUNT
+			STOREVAR	1
+			STOREVAR	2
+			LOADVAR	_WK_COUNT
+			SUBVAR	2
+			string	0	"タイプ%d回  roma換算%d回  %dキーの得"
+			SETHELP		1
+			POPVAR	2
+			POPVAR	1
+			POPVAR	0
+		LABEL	10
+			RETURN	0
+	endfunc
+
+	func TABLE_FUNC _subCount2
+		PUSHIMM	2
+		CALL	_subCount
+		RETURN	0
+	endfunc
+
+	func TABLE_FUNC _subCount1
+		PUSHIMM	1
+		CALL	_subCount
+		RETURN	0
+	endfunc
+endif
+
+#------------------------------------------------------------------------------
+# かなテーブルの実装
+#------------------------------------------------------------------------------
+
+# ここでは各文字の入力に必要な実際のキーストロークを定義します。キーストロー
+# クで表現できない文字は入力できません。また IME の種類やバージョンの違いに
+# よって、入力される文字に違いが生じる可能性があります。
+
+func TABLE_FUNC _kana_A
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'3'	# あ
+	ifsw CSW_COUNT
+		CALL	_subCount1
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_I
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'E'	# い
+	ifsw CSW_COUNT
+		CALL	_subCount1
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_U
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'4'	# う
+	ifsw CSW_COUNT
+		CALL	_subCount1
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_E
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'5'	# え
+	ifsw CSW_COUNT
+		CALL	_subCount1
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_O
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'6'	# お
+	ifsw CSW_COUNT
+		CALL	_subCount1
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_XA
+	SETMODIFIER	MOD_KANASHIFT
+	SENDKEY	'3'	# ぁ
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_XI
+	SETMODIFIER	MOD_KANASHIFT
+	SENDKEY	'E'	# ぃ
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_XU
+	SETMODIFIER	MOD_KANASHIFT
+	SENDKEY	'4'	# ぅ
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_XE
+	SETMODIFIER	MOD_KANASHIFT
+	SENDKEY	'5'	# ぇ
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_XO
+	SETMODIFIER	MOD_KANASHIFT
+	SENDKEY	'6'	# ぉ
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_VU
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'4'	# う
+	SETMODIFIER	MOD_KANA
+	SENDKEY	VK_LBRACKET	# 濁点
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+#------------------------------------------------------------------------------
+
+func TABLE_FUNC _kana_KA
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'T'	# か
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_KI
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'G'	# き
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_KU
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'H'	# く
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_KE
+	SETMODIFIER	MOD_KANA
+	SENDKEY	VK_EQUAL
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_KO
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'B'	# こ
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+
+func TABLE_FUNC _kana_GA
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'T'	# か
+	SETMODIFIER	MOD_KANA
+	SENDKEY	VK_LBRACKET	# 濁点
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_GI
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'G'	# き
+	SETMODIFIER	MOD_KANA
+	SENDKEY	VK_LBRACKET	# 濁点
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_GU
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'H'	# く
+	SETMODIFIER	MOD_KANA
+	SENDKEY	VK_LBRACKET	# 濁点
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_GE
+	SETMODIFIER	MOD_KANA
+	SENDKEY	VK_EQUAL	# け
+	SETMODIFIER	MOD_KANA
+	SENDKEY	VK_LBRACKET	# 濁点
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_GO
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'B'	# こ
+	SETMODIFIER	MOD_KANA
+	SENDKEY	VK_LBRACKET	# 濁点
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+#------------------------------------------------------------------------------
+
+func TABLE_FUNC _kana_SA
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'X'	# さ
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_SI
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'D'	# し
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_SU
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'R'	# す
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_SE
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'P'	# せ
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_SO
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'C'	# そ
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+
+func TABLE_FUNC _kana_ZA
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'X'	# さ
+	SETMODIFIER	MOD_KANA
+	SENDKEY	VK_LBRACKET	# 濁点
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_ZI
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'D'	# し
+	SETMODIFIER	MOD_KANA
+	SENDKEY	VK_LBRACKET	# 濁点
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_ZU
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'R'	# す
+	SETMODIFIER	MOD_KANA
+	SENDKEY	VK_LBRACKET	# 濁点
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_ZE
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'P'	# せ
+	SETMODIFIER	MOD_KANA
+	SENDKEY	VK_LBRACKET	# 濁点
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_ZO
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'C'	# そ
+	SETMODIFIER	MOD_KANA
+	SENDKEY	VK_LBRACKET	# 濁点
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+#------------------------------------------------------------------------------
+
+func TABLE_FUNC _kana_TA
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'Q'	# た
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_TI
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'A'	# ち
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_TU
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'Z'	# つ
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_TE
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'W'	# て
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_TO
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'S'	# と
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+
+func TABLE_FUNC _kana_DA
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'Q'	# た
+	SETMODIFIER	MOD_KANA
+	SENDKEY	VK_LBRACKET	# 濁点
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_DI
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'A'	# ち
+	SETMODIFIER	MOD_KANA
+	SENDKEY	VK_LBRACKET	# 濁点
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_DU
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'Z'	# つ
+	SETMODIFIER	MOD_KANA
+	SENDKEY	VK_LBRACKET	# 濁点
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_DE
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'W'	# て
+	SETMODIFIER	MOD_KANA
+	SENDKEY	VK_LBRACKET	# 濁点
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_DO
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'S'	# と
+	SETMODIFIER	MOD_KANA
+	SENDKEY	VK_LBRACKET	# 濁点
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+
+func TABLE_FUNC _kana_XTU
+	SETMODIFIER	MOD_KANASHIFT
+	SENDKEY	'Z'	# っ
+	ifsw CSW_COUNT
+		CALL	_subCount1
+	endif
+	RETURN	0
+endfunc
+
+#------------------------------------------------------------------------------
+
+func TABLE_FUNC _kana_NA
+	SETMODIFIER	MOD_KANASHIFT
+	SENDKEY	'U'	# な
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_NI
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'I'	# に
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_NU
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'1'	# ぬ
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_NE
+	SETMODIFIER	MOD_KANA
+	SENDKEY	VK_COMMA	# ね
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_NO
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'K'	# の
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+#------------------------------------------------------------------------------
+
+func TABLE_FUNC _kana_HA
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'F'	# は
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_HI
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'V'	# ひ
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_HU
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'2'	# ふ
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_HE
+	SETMODIFIER	MOD_KANA
+	SENDKEY VK_OEM_PLUS
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_HO
+	SETMODIFIER	MOD_KANA
+	SENDKEY	VK_HYPHEN		# ほ
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+
+func TABLE_FUNC _kana_BA
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'F'	# は
+	SETMODIFIER	MOD_KANA
+	SENDKEY	VK_LBRACKET	# 濁点
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_BI
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'V'	# ひ
+	SETMODIFIER	MOD_KANA
+	SENDKEY	VK_LBRACKET	# 濁点
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_BU
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'2'	# ふ
+	SETMODIFIER	MOD_KANA
+	SENDKEY	VK_LBRACKET	# 濁点
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_BE
+	SETMODIFIER	MOD_KANA
+	SENDKEY VK_OEM_PLUS	# へ
+	SETMODIFIER	MOD_KANA
+	SENDKEY	VK_LBRACKET	# 濁点
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_BO
+	SETMODIFIER	MOD_KANA
+	SENDKEY	VK_HYPHEN		# ほ
+	SETMODIFIER	MOD_KANA
+	SENDKEY	VK_LBRACKET	# 濁点
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+
+func TABLE_FUNC _kana_PA
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'F'	# は
+	SETMODIFIER	MOD_KANA
+	SENDKEY	VK_RBRACKET	# 半濁点
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_PI
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'V'	# ひ
+	SETMODIFIER	MOD_KANA
+	SENDKEY	VK_RBRACKET	# 半濁点
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_PU
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'2'	# ふ
+	SETMODIFIER	MOD_KANA
+	SENDKEY	VK_RBRACKET	# 半濁点
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_PE
+	SETMODIFIER	MOD_KANA
+	SENDKEY VK_OEM_PLUS	# へ
+	SETMODIFIER	MOD_KANA
+	SENDKEY	VK_RBRACKET	# 半濁点
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_PO
+	SETMODIFIER	MOD_KANA
+	SENDKEY	VK_HYPHEN		# ほ
+	SETMODIFIER	MOD_KANA
+	SENDKEY	VK_RBRACKET	# 半濁点
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+#------------------------------------------------------------------------------
+
+func TABLE_FUNC _kana_MA
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'J'	# ま
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_MI
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'N'	# み
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_MU
+	SETMODIFIER	MOD_KANA
+	SENDKEY	VK_BACKSLASH
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_ME
+	SETMODIFIER	MOD_KANA
+	SENDKEY	VK_SLASH	# め
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_MO
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'M'	# も
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+#------------------------------------------------------------------------------
+
+func TABLE_FUNC _kana_YA
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'7'	# や
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_YU
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'8'	# ゆ
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+
+func TABLE_FUNC _kana_YO
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'9'	# よ
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_XYA
+	SETMODIFIER	MOD_KANASHIFT
+	SENDKEY	'7'	# ゃ
+	ifsw CSW_COUNT
+		CALL	_subCount1
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_XYU
+	SETMODIFIER	MOD_KANASHIFT
+	SENDKEY	'8'	# ゅ
+	ifsw CSW_COUNT
+		CALL	_subCount1
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_XYO
+	SETMODIFIER	MOD_KANASHIFT
+	SENDKEY	'9'	# ょ
+	ifsw CSW_COUNT
+		CALL	_subCount1
+	endif
+	RETURN	0
+endfunc
+
+#------------------------------------------------------------------------------
+
+func TABLE_FUNC _kana_RA
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'O'	# ら
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_RI
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'L'	# り
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_RU
+	SETMODIFIER	MOD_KANA
+	SENDKEY	VK_PERIOD	# る
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_RE
+	SETMODIFIER	MOD_KANA
+	SENDKEY	VK_SEMICOLON	# れ
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_RO
+	SETMODIFIER	MOD_KANA
+	SENDKEY	VK_BACKQUOTE
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+#------------------------------------------------------------------------------
+
+func TABLE_FUNC _kana_WA
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'0'	# わ
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+
+func TABLE_FUNC _kana_WO
+	SETMODIFIER	MOD_KANASHIFT
+	SENDKEY	'0'	# を
+	ifsw CSW_COUNT
+		CALL	_subCount2
+	endif
+	RETURN	0
+endfunc
+
+
+func TABLE_FUNC _kana_NN
+	SETMODIFIER	MOD_KANA
+	SENDKEY	'Y'	# ん
+	ifsw CSW_COUNT
+		CALL	_subCount1
+	endif
+	RETURN	0
+endfunc
+
+#------------------------------------------------------------------------------
+
+func TABLE_FUNC _kana_TYOU
+#	SETMODIFIER	MOD_KANA
+#	SENDKEY	VK_BACKSLASH	# ー
+	SENDKEY VK_HYPHEN
+#	ifsw CSW_COUNT
+#		CALL	_subCount1
+#	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_DAKU
+	SETMODIFIER	MOD_KANA
+	SENDKEY	VK_LBRACKET	# 濁点
+	ifsw CSW_COUNT
+		CALL	_subCount1
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_HDAKU
+	SETMODIFIER	MOD_KANA
+	SENDKEY	VK_RBRACKET	# 半濁点
+	ifsw CSW_COUNT
+		CALL	_subCount1
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_MARU
+	SETMODIFIER	MOD_KANASHIFT
+	SENDKEY	VK_PERIOD	# 句点 。
+	ifsw CSW_COUNT
+		CALL	_subCount1
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_TEN
+	SETMODIFIER	MOD_KANASHIFT
+	SENDKEY	VK_COMMA	# 読点 、
+	ifsw CSW_COUNT
+		CALL	_subCount1
+	endif
+	RETURN	0
+endfunc
+
+#------------------------------------------------------------------------------
+
+func TABLE_FUNC _subASCII
+	# ATOK用の設定
+	SENDKEY	VK_DBE_ALPHANUMERIC
+	POPVAR	_WK_VAR2
+	SENDVAR	_WK_VAR2
+	SENDKEY	VK_DBE_ALPHANUMERIC
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_PERIOD
+	PUSHIMM	VK_PERIOD	# .
+	CALL	_subASCII
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_COMMA
+	PUSHIMM	VK_COMMA	# ,
+	CALL	_subASCII
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_SLASH
+	PUSHIMM	VK_SLASH	# /
+	CALL	_subASCII
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_LSBRA
+	PUSHIMM	VK_LBRACKET	# [
+	CALL	_subASCII
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_RSBRA
+	PUSHIMM	VK_RBRACKET	# ]
+	CALL	_subASCII
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_NINE
+	SENDKEY	'9'
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_ZERO
+	SENDKEY '0'
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_MINUS
+	PUSHIMM	VK_HYPHEN
+	CALL	_subASCII
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_EQUAL
+	SENDKEY	VK_DBE_ALPHANUMERIC
+	SETMODIFIER	MOD_SHIFT
+	SENDKEY VK_OEM_MINUS
+	SENDKEY	VK_DBE_ALPHANUMERIC
+	RETURN	0
+endfunc
+
+#------------------------------------------------------------------------------
+
+func TABLE_FUNC _kana_HATENA
+	SETMODIFIER	MOD_SHIFT
+	SENDKEY	VK_SLASH	# ？
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_LKAGI
+	SENDKEY	VK_LBRACKET	# 「
+	ifsw CSW_COUNT
+		CALL	_subCount1
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_RKAGI
+	SENDKEY	VK_RBRACKET	# 」
+	ifsw CSW_COUNT
+		CALL	_subCount1
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_TILDE
+	SETMODIFIER	MOD_SHIFT
+	SENDKEY	VK_BACKQUOTE	# ～
+	ifsw CSW_COUNT
+		CALL	_subCount1
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_LBRA
+	SETMODIFIER	MOD_SHIFT
+	SENDKEY	'9'		# （
+	ifsw CSW_COUNT
+		CALL	_subCount1
+	endif
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_RBRA
+	SETMODIFIER	MOD_SHIFT
+	SENDKEY	'0'		# ）
+	ifsw CSW_COUNT
+		CALL	_subCount1
+	endif
+	RETURN	0
+endfunc
+
+#func TABLE_FUNC _kana_LT
+#	SETMODIFIER	MOD_SHIFT
+#	SENDKEY	VK_COMMA	# ＜
+#	RETURN	0
+#endfunc
+
+#func TABLE_FUNC _kana_GT
+#	SETMODIFIER	MOD_SHIFT
+#	SENDKEY	VK_PERIOD	# ＞
+#	RETURN	0
+#endfunc
+
+
+func TABLE_FUNC _kana_LCBRA
+	SETMODIFIER	MOD_SHIFT
+	SENDKEY	VK_LBRACKET	# [
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_RCBRA
+	SETMODIFIER	MOD_SHIFT
+	SENDKEY	VK_RBRACKET	# ]
+	RETURN	0
+endfunc
+
+
+#------------------------------------------------------------------------------
+
+func TABLE_FUNC _kana_BS
+	SENDKEY	VK_BACK		# [BS]
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_ESC
+	SENDKEY	VK_ESCAPE	# [ESC]
+	RETURN	0
+endfunc
+
+#------------------------------------------------------------------------------
+
+func TABLE_FUNC _kana_NOP
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_SHORG
+	SETMODIFIER	MOD_SHIFT
+	SENDVAR	_KB_KEYCODE
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_ORG
+	SENDVAR	_KB_KEYCODE
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_PREV
+	LOAD 1
+	SUBVAR _KB_KEYCODE
+	SENDVAR	_KB_KEYCODE
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _kana_SHPRV
+	LOAD 1
+	SUBVAR _KB_KEYCODE
+	SETMODIFIER	MOD_SHIFT
+	SENDVAR	_KB_KEYCODE
+	RETURN	0
+endfunc
+
+#------------------------------------------------------------------------------
+# 親指シフトキー単押しに割り当てられる機能の実装
+#------------------------------------------------------------------------------
+
+func TABLE_FUNC _os_ORG
+	SENDVAR	_OB_KEYCODE
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _os_IMESW
+	WINCMD	WINCMD_IMESW
+	RETURN	0
+endfunc
+
+func TABLE_FUNC _os_HENKAN
+	SENDKEY	VK_CONVERT
+	RETURN	0
+endfunc
+
+# 親指シフトキー単押しで任意のアクションを実行できるようにします。
+func TABLE_FUNC _os_CUSTOM
+#           ↓ ここを任意のキーコードで置き換え出来ます。
+	SENDKEY	VK_SPACE
+# 以下 例
+#   SENDKEY VK_CONVERT
+#   SENDKEY VK_SPACE
+#   SENDKEY VK_NCONVERT
+# スクリプトなので、文字送信以外のアクションを記述することも可能です。
+	RETURN	0
+endfunc
+
+
+#------------------------------------------------------------------------------
+# 親指シフトの実行ロジック
+#------------------------------------------------------------------------------
+
+# KeyBuffer
+# 一般キーの情報をバッファリングする
+func TABLE_FUNC _subPushKey
+		TESTGSTATE	_gs_ISLEFT
+		STOREVAR	_KB_ISLEFT
+		LOADVAR		_IN_DF_FUNC
+		STOREVAR	_KB_DF_FUNC
+		LOADVAR		_IN_OS_FUNC
+		STOREVAR	_KB_OS_FUNC
+		LOADVAR		_IN_CR_FUNC
+		STOREVAR	_KB_CR_FUNC
+		LOADVAR		_IN_SH_FUNC
+		STOREVAR	_KB_SH_FUNC
+		LOADVAR		GVAR_KEYCODE
+		STOREVAR	_KB_KEYCODE
+		LOADVAR		GVAR_EVENTTIME
+		STOREVAR	_KB_TIME
+		SETGSTATE	_gs_KEYBUFFER
+		RETURN	0
+endfunc
+
+# OSBuffer
+# 親指シフトキーをバッファリングする
+func TABLE_FUNC _subPushOS
+		TESTGSTATE	_gs_ISLEFT
+		STOREVAR	_OB_ISLEFT
+		LOADVAR		_IN_DF_FUNC
+		STOREVAR	_OB_FUNC
+		LOADVAR		GVAR_KEYCODE
+		STOREVAR	_OB_KEYCODE
+		LOADVAR		GVAR_EVENTTIME
+		STOREVAR	_OB_TIME
+		SETGSTATE	_gs_OSBUFFER
+		RETURN	0
+endfunc
+
+
+# キーバッファの送信を行う
+#   シフト無しの送信のみ、親指シフト状態は変更しない。
+func TABLE_FUNC _subFlushKey
+		TESTGSTATE	_gs_KEYBUFFER
+		IF_FALSE	80			# キーバッファが無い場合は飛ぶ(何もしない)
+		IF_SHIFT	60			# 小指シフトなら飛ぶ
+		# デフォルトコード送信
+		ifsw LOS_ALT_PATCH_ENABLE1
+			RAWUP	VK_LMENU
+		endif
+		CALLVAR	_KB_DF_FUNC			# 通常コード実行
+		RESETGSTATE	_gs_KEYBUFFER	# キーバッファをクリア
+	LABEL	80
+		RETURN	0
+	LABEL	60
+		# 小指シフト
+		RAWUP	VK_SHIFT			# 小指shift キーのキャンセル
+		CALLVAR	_KB_SH_FUNC			# 小指shift 実行
+		RESETGSTATE	_gs_KEYBUFFER	# キーバッファをクリア
+#		RAWDOWN	VK_SHIFT			# 小指shift キーを戻す
+		RETURN	0
+endfunc
+
+
+# キーバッファの送信する
+#   バッファをすべて解消する。親指シフトがあれば考慮する。
+func TABLE_FUNC _subFlushAll
+		TESTGSTATE	_gs_KEYBUFFER
+		IF_FALSE	80		# キーバッファが無い場合は飛ぶ
+		# キーバッファあり
+		TESTGSTATE	_gs_OSBUFFER
+		IF_TRUE		20		# 親指シフトありなら飛ぶ
+		# シフトなし、キーバッファのみ
+		CALL	_subFlushKey
+		RETURN	0
+	LABEL	20
+		# キーバッファも親指シフトもある場合
+		#  クロスシフト判定
+		LOADVAR		_OB_ISLEFT
+		CMPVAR_EQ	_KB_ISLEFT
+		IF_FALSE	40	# クロスならとぶ
+		# 通常親指シフト
+		ifsw LOS_ALT_PATCH_ENABLE1
+			RAWUP	VK_LMENU
+		endif
+		CALLVAR	_KB_OS_FUNC			# 親指シフト実行
+		RESETGSTATE	_gs_KEYBUFFER	# キーバッファをクリア
+		RESETGSTATE	_gs_OSBUFFER	# 親指shift状態をクリア
+		RETURN	0
+	LABEL	40
+		# クロス親指シフト
+		ifsw LOS_ALT_PATCH_ENABLE1
+			RAWUP	VK_LMENU
+		endif
+		CALLVAR	_KB_CR_FUNC			# クロスシフトの実行
+		RESETGSTATE	_gs_KEYBUFFER	# キーバッファをクリア
+		RESETGSTATE	_gs_OSBUFFER	# 親指shift状態をクリア
+		RETURN	0
+	LABEL	80
+		# キーバッファが無い場合
+		TESTGSTATE	_gs_OSBUFFER
+		IF_FALSE	60				# 親指シフトが無ければ飛ぶ
+		CALLVAR	_OB_FUNC			# 親指シフト単独機能の実行
+		RESETGSTATE	_gs_OSBUFFER	# 親指shift状態をクリア
+	LABEL	60
+		RETURN	0
+endfunc
+
+
+# 一般キーの実行
+#  一般キーの入力処理を行います
+func TABLE_FUNC _subExecKey
+		TESTSYSFLAG	SYSFLAG_IME
+		IF_FALSE	10		# IME off なら無視
+		IF_CTRL		10		# Ctrl 併用なら無視
+		TESTSYSFLAG	SYSFLAG_SCANVALID
+		IF_TRUE		10		# 有効な内部キーボードなら無視(ZERO3/EM・ONE)
+		# 親指モード
+		TESTGSTATE	_gs_OSBUFFER
+		IF_TRUE	20	# すでに OSBuffer があれば飛ぶ
+		# 親指shift 無し
+		IF_UP	30	# キーを離したときは飛ぶ
+		# キーを押したとき
+		#  [send PrevKEY, Push]
+		CALL	_subFlushAll	# もし前の文字があれば送信しておく
+		CALL	_subPushKey		# キーバッファリング
+		EXIT	TRUE
+	LABEL	10
+		CALL	_subFlushAll	# もし前バッファがあれば送信しておく
+		EXIT	FALSE
+	LABEL	30
+		# キーを離したとき
+		#  [send KEY]
+		TESTGSTATE	_gs_KEYBUFFER
+		IF_FALSE	60	# バッファが無い場合は飛ぶ
+		LOADVAR	_KB_KEYCODE
+		CMPVAR_EQ	GVAR_KEYCODE
+		IF_FALSE	60	# 自分のバッファでなければ解決済み。UP では送らない
+		CALL	_subFlushAll	# バッファがあれば送信する
+	LABEL	60
+		EXIT	TRUE
+	LABEL	20
+		# OS がバッファにあるとき
+		IF_UP	40	# キーを離したときは飛ぶ(何もしない)
+		# キーを押したとき
+		TESTGSTATE	_gs_KEYBUFFER
+		IF_TRUE	50	# 前の文字がバッファにあるなら飛ぶ
+		# 前の文字無し
+		#  [send OS+KEY]
+		CALL	_subPushKey		# キーバッファリング
+		CALL	_subFlushAll	# すぐに送信する
+	LABEL	40
+		EXIT	TRUE
+	LABEL	50
+		# 前の文字あり
+		#
+		# 前の文字がバッファリングされていてかつ 親指shift がある場合
+		# どちらに 親指shift をつけるか時間判定を行う
+		LOADVAR		_OB_TIME	# 親指シフトが押された時間
+		STOREVAR	_WK_VAR0
+		LOADVAR		_KB_TIME	# キーバッファにある前のキーの時間
+		SUBVAR		_WK_VAR0	# _WK_VAR0= _OB_TIME - _KB_TIME
+
+		LOADVAR		GVAR_EVENTTIME	# 今回の時間
+		STOREVAR	_WK_VAR1
+		LOADVAR		_OB_TIME	# 親指シフトの時間
+		SUBVAR		_WK_VAR1	# _WK_VAR1= GVAR_EVENTTIME - _OB_TIME
+		LOADVAR		_WK_VAR1
+
+		CMPVAR_LT	_WK_VAR0	# if( _WK_VAR1 < _WK_VAR0 )
+		IF_TRUE		80		# 親指shift が後ろにつく場合は飛ぶ
+		# 親指shift が前につく場合
+		#  [send PrevKEY+OS, Push]
+		CALL	_subFlushAll	# 前のキーを親指シフト付で送信
+		CALL	_subPushKey		# バッファリングのみ
+		EXIT	TRUE
+	LABEL	80
+		# Shift が後ろにつく場合
+		#  [send PrevKEY, send OS+KEY]
+		CALL	_subFlushKey	# PrevKEY 送信
+		CALL	_subPushKey		# バッファリング
+		CALL	_subFlushAll	# OS+KEY 送信
+		EXIT	TRUE
+endfunc
+
+
+# 左手用エントリ
+func TABLE_FUNC	_subLEFT
+	SETGSTATE	_gs_ISLEFT	# left
+	CALL	_subExecKey
+endfunc
+
+
+# 右手用エントリ
+func TABLE_FUNC	_subRIGHT
+	RESETGSTATE	_gs_ISLEFT	# right
+	CALL	_subExecKey
+endfunc
+
+
+# 親指シフトキー用共通処理
+#  呼び出し元で ALLOCVSTATE が必要
+func TABLE_FUNC	_subExecOS
+		# 無視判定
+		TESTSYSFLAG	SYSFLAG_IME
+		IF_FALSE	40		# IME off なら無視
+		IF_SHIFT	30		# 小指シフト併用なら無視
+		IF_CTRL		30		# ctrl 併用なら無視
+		# 小指shift/ctrl無し
+		IF_UP		20
+		# down -----------------
+		IF_OSDOWN	10		# すでに押されている場合(キーリピートを抑制する)
+		#
+		TESTGSTATE	_gs_OSBUFFER
+		IF_FALSE	90		# 親指シフトバッファが無ければ飛ぶ
+		# すでに別の親指シフトが押されている場合
+		CALL	_subFlushAll	# 先に実行する
+	LABEL	90
+		ifsw OS_ATIMEOUT
+				TESTGSTATE	_gs_KEYBUFFER
+				IF_FALSE	50		# KeyBuffer が無ければ飛ぶ
+				# Keyバッファがあれば timeout 判定
+				SETDIFFTIME	OS_ATIMEOUT
+				LOADVAR	_KB_TIME
+				STOREVAR	GVAR_SAVETIME
+				IF_DIFFTIME	100	# もし timeout なら
+			LABEL	50
+		endif
+		CALL	_subPushOS	# バッファリング
+		RESETVSTATE	_vs_OSDOWN
+	LABEL	10
+		EXIT	TRUE
+		ifsw OS_ATIMEOUT
+			LABEL	100
+				# timeout時
+				CALL	_subFlushKey	# 切り分けフラッシュ
+				CALL	_subPushOS	# バッファリング
+				RESETVSTATE	_vs_OSDOWN
+				EXIT	TRUE
+		endif
+	LABEL	20
+		# up -------------------
+		TESTGSTATE	_gs_OSBUFFER
+		IF_FALSE	110		# バッファが無ければ飛ぶ
+		LOADVAR	_OB_KEYCODE
+		CMPVAR_EQ	GVAR_KEYCODE
+		IF_FALSE	110	# 自分のバッファでなければ解決済み。UP では送らない
+		CALL	_subFlushAll	# 親指シフト実行
+	LABEL	110
+		RESETVSTATE	_vs_OSDOWN
+		EXIT	TRUE
+	LABEL	30
+		# 小指shift/ctrl -------------------
+		IF_OSDOWN	70		# すでに押されているなら親指シフト優先
+		# 本来の機能
+		IF_DOWN	60
+		# up 時に実行する
+		CALL	_subFlushAll		# バッファ実行
+		SENDVAR	GVAR_KEYCODE
+	LABEL	60
+		EXIT	TRUE
+	LABEL	70
+		IF_DOWN	80	# 念のため(実際は DOWN では来ない)
+		# up -------------------
+		CALL	_subFlushAll		# 親指シフト実行
+		RESETVSTATE	_vs_OSDOWN
+	LABEL	80
+		EXIT	TRUE
+		#
+	LABEL	40
+		# IME off なら本来の機能
+		RESETVSTATE	_vs_OSDOWN
+		EXIT	FALSE
+endfunc
+
+
+# 同期付きのキー発行
+func TABLE_FUNC	_subSync
+		IF_UP	10
+		CALL	_subFlushAll	# バッファがあれば発行しておく
+		POPVAR	_WK_VAR0
+		DOWNVAR	_WK_VAR0	# DOWN
+#		ifsw CSW_COUNT
+#			CALL	_subCount1
+#		endif
+		EXIT	TRUE
+	LABEL	10
+		POPVAR	_WK_VAR0
+		UPVAR	_WK_VAR0	# UP
+		EXIT	TRUE
+endfunc
+
+# 同期付きのキー発行 キーコードが同じ場合
+func TABLE_FUNC	_subSyncKC
+#	PUSHVAR	GVAR_KEYCODE
+#	CALL	_subSync
+		TESTSYSFLAG	SYSFLAG_IME
+		IF_FALSE	90		# IME off なら無視
+		PUSHVAR	GVAR_KEYCODE
+		CALL	_subSync
+		RETURN	0
+	LABEL	90
+		EXIT	FALSE
+endfunc
+
+
+# カスタムヘルパー
+func TABLE_FUNC	_subHelper
+		IF_UP	10
+		CALL	_subFlushAll	# 同期
+		RETURN	0	# DOWN なら Flush して戻る
+	LABEL	10
+		EXIT	TRUE	# UP は戻らず終了
+endfunc
+
+
+#------------------------------------------------------------------------------
+# 文字以外のキー
+#------------------------------------------------------------------------------
+
+# 同期処理を入れるために定義しておく。
+# これらのキー操作が行われると先にバッファを確定する。
+# 他のキー割り当てのために上書きされてかまわない。
+
+# [SPACE]
+func _TABLE_OS	VK_SPACE
+	CALL	_subSyncKC
+endfunc
+
+# [BS]
+func _TABLE_OS	VK_BACK
+	CALL	_subSyncKC
+endfunc
+
+# [DEL]
+func _TABLE_OS	VK_DELETE
+	CALL	_subSyncKC
+endfunc
+
+# [ENTER]
+func _TABLE_OS	VK_RETURN
+	CALL	_subSyncKC
+endfunc
+
+# [TAB]
+func _TABLE_OS	VK_TAB
+	CALL	_subSyncKC
+endfunc
+
+# [UP]
+func _TABLE_OS	VK_UP
+	CALL	_subSyncKC
+endfunc
+
+# [DOWN]
+func _TABLE_OS	VK_DOWN
+	CALL	_subSyncKC
+endfunc
+
+# [LEFT]
+func _TABLE_OS	VK_LEFT
+	CALL	_subSyncKC
+endfunc
+
+# [RIGHT]
+func _TABLE_OS	VK_RIGHT
+	CALL	_subSyncKC
+endfunc
+
+# [PageUp]
+func _TABLE_OS	VK_PRIOR
+	CALL	_subSyncKC
+endfunc
+
+# [PageDown]
+func _TABLE_OS	VK_NEXT
+	CALL	_subSyncKC
+endfunc
+
+# [End]
+func _TABLE_OS	VK_END
+	CALL	_subSyncKC
+endfunc
+
+# [Home]
+func _TABLE_OS	VK_HOME
+	CALL	_subSyncKC
+endfunc
+
+# [変換]
+func _TABLE_OS	VK_CONVERT
+	CALL	_subSyncKC
+endfunc
+
+# [無変換]
+func _TABLE_OS	VK_NCONVERT
+	CALL	_subSyncKC
+endfunc
+
+
+#------------------------------------------------------------------------------
+# 特殊キー
+#-----------------------------------------------------------------------------
+
+# 特殊な状態の監視など
+# 必要に応じて同期処理も行う。
+
+# [Ctrl] ステートの記録を行う (CEのみ)
+func TABLE_ALLMODE	VK_CONTROL
+		ifsw CSW_CTRLSWAP_ENABLE
+				# 交換する場合
+				TESTSYSFLAG	SYSFLAG_SCANVALID
+				IF_TRUE	20	# 内蔵キーボードなら元の処理
+				# [英数]キーとして実行
+				PUSHIMM	VK_DBE_ALPHANUMERIC
+				CALL	_subSync
+			LABEL	20
+		endif
+		# [Ctrl]キーとして実行、ステートの記録
+		IF_UP	10
+		# down
+		SETGSTATE	STATE_CTRL
+		EXIT		FALSE
+	LABEL	10
+		# up
+		RESETGSTATE	STATE_CTRL
+		EXIT		FALSE
+endfunc
+
+
+# [英数/CapsLock] (CEのみ)
+ifsw CSW_CTRLSWAP_ENABLE
+	func TABLE_ALLMODE	VK_DBE_ALPHANUMERIC
+			# Ctrl キーとして実行
+			IF_UP	10
+			# down
+			SETGSTATE	STATE_CTRL
+			RAWDOWN		VK_CONTROL
+			EXIT		TRUE
+		LABEL	10
+			# up
+			RESETGSTATE	STATE_CTRL
+			RAWUP		VK_CONTROL
+			EXIT		TRUE
+	endfunc
+endif
+
+
+# [ESC]
+func TABLE_ALLMODE	VK_ESCAPE
+	ifsw CSW_ESCSWAP_ENABLE
+			# 交換する場合(CEのみ)
+			TESTSYSFLAG	SYSFLAG_SCANVALID
+			IF_TRUE	20	# 内蔵キーなら元の処理
+			CALL	_subHelper
+			WINCMD	WINCMD_IMESW	# IME 切り替え
+			EXIT	TRUE
+		LABEL	20
+	endif
+	CALL	_subSyncKC
+endfunc
+
+
+# [半/全]
+ifce
+	# 交換しない場合(CEのみ)
+	func TABLE_ALLMODE	VK_DBE_SBCSCHAR
+			IF_UP	10
+			CALL	_subFlushAll
+			WINCMD	WINCMD_IMESW	# IME 切り替え
+		LABEL	10
+			EXIT	TRUE
+	endfunc
+endif
+
+ifpc
+	# 交換しない場合(PCのみ)
+	func TABLE_ALLMODE	VK_DBE_SBCSCHAR
+		CALL	_subSyncKC
+	endfunc
+endif
+
+ifsw CSW_ESCSWAP_ENABLE
+	# 交換する場合
+	func TABLE_ALLMODE	VK_DBE_SBCSCHAR
+		PUSHIMM	VK_ESCAPE		# [ESC]
+		CALL	_subSync
+	endfunc
+endif
+
+
+
+# [漢字]キー (ALT + 半/全) (CEのみ)
+ifce
+	#  ここで好きなキーを IME 切り替えキーとして定義できます(CEのみ)
+	func _TABLE_OS	VK_KANJI
+		CALL	_subHelper
+		WINCMD	WINCMD_IMESW
+		EXIT	TRUE
+	endfunc
+
+	# [半/全]キー予備
+	func _TABLE_OS	VK_DBE_DBCSCHAR
+		SETVAR0	VK_DBE_SBCSCHAR
+		CALLVARDEF	0	# VK_DBE_SBCSCHAR の処理を呼び出す
+	endfunc
+endif
+
+
+# [RWIN] キーステートの記録だけを行う (CEのみ)
+#   [文字],[OK] キー判定用
+ifce
+	func TABLE_ALLMODE	VK_RWIN
+			IF_UP	10
+			# down
+			SETGSTATE	STATE_RWIN
+			EXIT		FALSE
+		LABEL	10
+			# up
+			RESETGSTATE	STATE_RWIN
+			EXIT		FALSE
+	endfunc
+endif
+
+
+# [Shift] ステートの記録だけを行う
+func TABLE_ALLMODE	VK_SHIFT
+		IF_UP	10
+		# down
+		SETGSTATE	STATE_SHIFT
+		EXIT		FALSE
+	LABEL	10
+		# up
+		RESETGSTATE	STATE_SHIFT
+		EXIT		FALSE
+endfunc
+
+
+ifpc
+	# L [Ctrl] (PC専用)
+	func TABLE_ALLMODE	VK_LCONTROL
+		SETVAR0	VK_CONTROL
+		CALLVARDEF	0
+	endfunc
+
+	# R [Ctrl] (PC専用)
+	func TABLE_ALLMODE	VK_RCONTROL
+		SETVAR0	VK_CONTROL
+		CALLVARDEF	0
+	endfunc
+
+	# L [Shift] (PC専用)
+	func TABLE_ALLMODE	VK_LSHIFT
+		SETVAR0	VK_SHIFT
+		CALLVARDEF	0
+	endfunc
+
+	# R [Shift] (PC専用)
+	func TABLE_ALLMODE	VK_RSHIFT
+		SETVAR0	VK_SHIFT
+		CALLVARDEF	0
+	endfunc
+endif
+
+
+
+
+
+#------------------------------------------------------------------------------
+# 通常キー
+#------------------------------------------------------------------------------
+
+# 以下キーごとの設定 カスタマイズできます
+
+#------------------------------------------------------------------------------
+# 左手
+#------------------------------------------------------------------------------
+
+func _TABLE_OS 'Q'
+	SETVAR0	_kana_MARU	# 。 句点
+	SETVAR1	_kana_XA	# ぁ
+	SETVAR2	_kana_HDAKU	# ゜ 半濁点
+	SETVAR3	_kana_SHORG
+	CALL	_subLEFT
+endfunc
+
+
+func _TABLE_OS 'W'
+	SETVAR0	_kana_KA	# か
+	SETVAR1	_kana_E		# え
+	SETVAR2	_kana_GA	# が
+	SETVAR3	_kana_SHORG
+	CALL	_subLEFT
+endfunc
+
+
+func _TABLE_OS 'E'
+	SETVAR0	_kana_TA	# た
+	SETVAR1	_kana_RI	# り
+	SETVAR2	_kana_DA	# だ
+	SETVAR3	_kana_SHORG
+	CALL	_subLEFT
+endfunc
+
+
+
+func _TABLE_OS 'R'
+	SETVAR0	_kana_KO	# こ
+	SETVAR1	_kana_XYA	# ゃ
+	SETVAR2	_kana_GO	# ご
+	SETVAR3	_kana_SHORG
+	CALL	_subLEFT
+endfunc
+
+
+func _TABLE_OS 'T'
+	SETVAR0	_kana_SA	# さ
+	SETVAR1	_kana_RE	# れ
+	SETVAR2	_kana_ZA	# ざ
+	SETVAR3	_kana_SHORG
+	CALL	_subLEFT
+endfunc
+
+
+#------------------------------------------------------------------------------
+
+
+func _TABLE_OS 'A'
+	SETVAR0	_kana_U		# う
+	SETVAR1	_kana_WO	# を
+	SETVAR2	_kana_VU	# ヴ
+	SETVAR3	_kana_SHORG
+	CALL	_subLEFT
+endfunc
+
+
+func _TABLE_OS 'S'
+	SETVAR0	_kana_SI	# し
+	SETVAR1	_kana_A		# あ
+	SETVAR2	_kana_ZI	# じ
+	SETVAR3	_kana_SHORG
+	CALL	_subLEFT
+endfunc
+
+
+func _TABLE_OS 'D'
+	SETVAR0	_kana_TE	# て
+	SETVAR1	_kana_NA	# な
+	SETVAR2	_kana_DE	# で
+	SETVAR3	_kana_SHORG
+	CALL	_subLEFT
+endfunc
+
+
+func _TABLE_OS 'F'
+	SETVAR0	_kana_KE	# け
+	SETVAR1	_kana_XYU	# ゅ
+	SETVAR2	_kana_GE	# げ
+	SETVAR3	_kana_SHORG
+	CALL	_subLEFT
+endfunc
+
+
+func _TABLE_OS 'G'
+	SETVAR0	_kana_SE	# せ
+	SETVAR1	_kana_MO	# も
+	SETVAR2	_kana_ZE	# ぜ
+	SETVAR3	_kana_SHORG
+	CALL	_subLEFT
+endfunc
+
+
+#------------------------------------------------------------------------------
+
+
+func _TABLE_OS 'Z'
+	SETVAR0	CMAP_DF_Z	# ．or 。
+	SETVAR1	_kana_XU	# ぅ
+	SETVAR2	_kana_NOP	# 
+	SETVAR3	_kana_SHORG
+	CALL	_subLEFT
+endfunc
+
+
+func _TABLE_OS 'X'
+	SETVAR0	_kana_HI	# ひ
+	SETVAR1	_kana_TYOU	# ー
+	SETVAR2	_kana_BI	# び
+	SETVAR3	CMAP_SH_X	# ぴ or X
+	CALL	_subLEFT
+endfunc
+
+
+func _TABLE_OS 'C'
+	SETVAR0	_kana_SU	# す
+	SETVAR1	_kana_RO	# ろ
+	SETVAR2	_kana_ZU	# ず
+	SETVAR3	_kana_SHORG
+	CALL	_subLEFT
+endfunc
+
+
+func _TABLE_OS 'V'
+	SETVAR0	_kana_HU	# ふ
+	SETVAR1	_kana_YA	# や
+	SETVAR2	_kana_BU	# ぶ
+	SETVAR3	CMAP_SH_V	# ぷ or V
+	CALL	_subLEFT
+endfunc
+
+
+func _TABLE_OS 'B'
+	SETVAR0	_kana_HE	# へ
+	SETVAR1	_kana_XI	# ぃ
+	SETVAR2	_kana_BE	# べ
+	SETVAR3	CMAP_SH_B	# ぺ or B
+	CALL	_subLEFT
+endfunc
+
+
+#------------------------------------------------------------------------------
+# 右手
+#------------------------------------------------------------------------------
+
+
+func _TABLE_OS 'Y'
+	SETVAR0	_kana_RA	# ら
+	SETVAR1	_kana_YO	# よ
+	SETVAR2	_kana_PA	# ぱ
+	SETVAR3	_kana_SHORG
+	CALL	_subRIGHT
+endfunc
+
+
+func _TABLE_OS 'U'
+	SETVAR0	_kana_TI	# ち
+	SETVAR1	_kana_NI	# に
+	SETVAR2	_kana_DI	# ぢ
+	SETVAR3	_kana_SHORG
+	CALL	_subRIGHT
+endfunc
+
+
+func _TABLE_OS 'I'
+	SETVAR0	_kana_KU	# く
+	SETVAR1	_kana_RU	# る
+	SETVAR2	_kana_GU	# ぐ
+	SETVAR3	_kana_SHORG
+	CALL	_subRIGHT
+endfunc
+
+
+func _TABLE_OS 'O'
+	SETVAR0	_kana_TU	# つ
+	SETVAR1	_kana_MA	# ま
+	SETVAR2	_kana_DU	# づ
+	SETVAR3	_kana_SHORG
+	CALL	_subRIGHT
+endfunc
+
+
+func _TABLE_OS 'P'
+	SETVAR0	CMAP_DF_P	# ，or 、
+	SETVAR1	_kana_XE	# ぇ
+	SETVAR2	_kana_PI	# ぴ
+	SETVAR3	_kana_SHORG
+	CALL	_subRIGHT
+endfunc
+
+
+func _TABLE_OS VK_LBRACKET # [ {
+	SETVAR0	_kana_TEN
+	SETVAR1	_kana_NOP
+	SETVAR2	_kana_NOP
+	SETVAR3	_kana_SHORG
+	CALL	_subRIGHT
+endfunc
+
+
+func _TABLE_OS VK_RBRACKET # ] }
+	SETVAR0	_kana_NOP
+	SETVAR1	_kana_NOP
+	SETVAR2	_kana_NOP
+	SETVAR3	_kana_SHORG
+	CALL	_subRIGHT
+endfunc
+
+
+func _TABLE_OS VK_BACKSLASH
+	SETVAR0	_kana_ORG	# \
+	SETVAR1	_kana_NOP	# 
+	SETVAR2	_kana_NOP	# 
+	SETVAR3	_kana_SHORG	# |
+	CALL	_subRIGHT
+endfunc
+
+
+
+
+
+#-----------------------------------------------------------------------------
+
+
+func _TABLE_OS 'H'
+	SETVAR0	_kana_HA	# は
+	SETVAR1	_kana_MI	# み
+	SETVAR2	_kana_BA	# ば
+	SETVAR3	CMAP_SH_H	# ぱ or H
+	CALL	_subRIGHT
+endfunc
+
+
+func _TABLE_OS 'J'
+	SETVAR0	_kana_TO	# と
+	SETVAR1	_kana_O		# お
+	SETVAR2	_kana_DO	# ど
+	SETVAR3	_kana_SHORG
+	CALL	_subRIGHT
+endfunc
+
+
+func _TABLE_OS 'K'
+	SETVAR0	_kana_KI	# き
+	SETVAR1	_kana_NO	# の
+	SETVAR2	_kana_GI	# ぎ
+	SETVAR3	_kana_SHORG
+	CALL	_subRIGHT
+endfunc
+
+
+func _TABLE_OS 'L'
+	SETVAR0	_kana_I		# い
+	SETVAR1	_kana_XYO	# ょ
+	SETVAR2	_kana_PO	# ぽ
+	SETVAR3	_kana_SHORG
+	CALL	_subRIGHT
+endfunc
+
+
+func _TABLE_OS VK_SEMICOLON
+	SETVAR0	_kana_NN	# ん
+	SETVAR1	_kana_XTU	# っ
+	SETVAR2	_kana_NOP
+	SETVAR3	_kana_SHORG	# ＋
+	CALL	_subRIGHT
+endfunc
+
+
+
+func _TABLE_OS VK_OEM_7 # ' "
+			TESTSYSFLAG	SYSFLAG_IME
+			IF_FALSE	10
+			PUSHIMM	VK_BACK	# [BS]
+			CALL	_subSync
+		LABEL	10
+			EXIT	FALSE
+endfunc
+
+
+
+#-----------------------------------------------------------------------------
+
+
+func _TABLE_OS 'N'
+	SETVAR0	_kana_ME	# め
+	SETVAR1	_kana_NU	# ぬ
+	SETVAR2	_kana_PU	# ぷ
+	SETVAR3	_kana_SHORG
+	CALL	_subRIGHT
+endfunc
+
+
+func _TABLE_OS 'M'
+	SETVAR0	_kana_SO	# そ
+	SETVAR1	_kana_YU	# ゆ
+	SETVAR2	_kana_ZO	# ぞ
+	SETVAR3	_kana_SHORG
+	CALL	_subRIGHT
+endfunc
+
+
+func _TABLE_OS VK_COMMA
+	SETVAR0	_kana_NE	# ね
+	SETVAR1	_kana_MU	# む
+	SETVAR2	_kana_PE	# ぺ
+	SETVAR3	_kana_SHORG	# ＜
+	CALL	_subRIGHT
+endfunc
+
+
+func _TABLE_OS VK_PERIOD
+	SETVAR0	_kana_HO	# ほ
+	SETVAR1	_kana_WA	# わ
+	SETVAR2	_kana_BO	# ぼ
+	SETVAR3	CMAP_SH_PERIOD	# ぽ or ＞
+	CALL	_subRIGHT
+endfunc
+
+
+func _TABLE_OS VK_SLASH
+	SETVAR0	_kana_ORG	# ・
+	SETVAR1	_kana_XO	# ぉ
+	SETVAR2	_kana_DAKU	# ゛
+	SETVAR3	_kana_SHORG	# ？
+	CALL	_subRIGHT
+endfunc
+
+
+#-----------------------------------------------------------------------------
+# 数字段
+#-----------------------------------------------------------------------------
+
+
+func _TABLE_OS '1'
+	SETVAR0	_kana_ORG		# １
+	SETVAR1	_kana_HATENA	# ？
+	SETVAR2	_kana_HATENA	# ？
+	SETVAR3	_kana_SHORG		# ！
+	CALL	_subLEFT
+endfunc
+
+
+func _TABLE_OS '2'
+	SETVAR0	_kana_ORG	# ２
+	SETVAR1	_kana_SLASH	# ／
+	SETVAR2	_kana_SLASH	# ／
+	SETVAR3	_kana_SHORG	# ”
+	CALL	_subLEFT
+endfunc
+
+
+func _TABLE_OS '3'
+	SETVAR0	_kana_ORG	# ３
+	SETVAR1	_kana_TILDE	# ～
+	SETVAR2	_kana_TILDE	# ～
+	SETVAR3	_kana_SHORG	# ＃
+	CALL	_subLEFT
+endfunc
+
+
+func _TABLE_OS '4'
+	SETVAR0	_kana_ORG	# ４
+	SETVAR1	_kana_LKAGI	# 「
+	SETVAR2	_kana_LKAGI	# 「
+	SETVAR3	_kana_SHORG	# ＄
+	CALL	_subLEFT
+endfunc
+
+
+func _TABLE_OS '5'
+	SETVAR0	_kana_ORG	# ５
+	SETVAR1	_kana_RKAGI	# 」
+	SETVAR2	_kana_RKAGI	# 」
+	SETVAR3	_kana_SHORG	# ％
+	CALL	_subLEFT
+endfunc
+
+
+
+func _TABLE_OS '6'
+	SETVAR0	_kana_ORG	# ６
+	SETVAR1	_kana_LSBRA	# ［
+	SETVAR2	_kana_LSBRA	# ［
+	SETVAR3	_kana_SHORG	# ＆
+	CALL	_subRIGHT
+endfunc
+
+
+func _TABLE_OS '7'
+	SETVAR0	_kana_ORG	# ７
+	SETVAR1	_kana_RSBRA	# ］
+	SETVAR2	_kana_RSBRA	# ］
+	SETVAR3	_kana_SHORG	# ’
+	CALL	_subRIGHT
+endfunc
+
+# 括弧の場所が英語配列と日本語配列でずれるのは使いにくいため 8 9 0 - = は英語配列を基本とする
+# 同時打鍵の場合 - = に { } を配置する
+
+func _TABLE_OS '8'
+	SETVAR0	_kana_ORG		# ８
+	SETVAR1	_kana_SHORG	# ＊
+	SETVAR2	_kana_SHORG	# ＊
+	SETVAR3	_kana_SHORG	# ＊
+	CALL	_subRIGHT
+endfunc
+
+func _TABLE_OS '9'
+		SETVAR0	_kana_ORG	# ９
+		SETVAR1	_kana_SHORG	# （
+		SETVAR2	_kana_SHORG	# （
+		SETVAR3	_kana_SHORG	# （
+		CALL	_subRIGHT
+
+endfunc
+
+func _TABLE_OS '0'
+		SETVAR0	_kana_ORG
+		SETVAR1	_kana_SHORG	# ）
+		SETVAR2	_kana_SHORG	# ）
+		SETVAR3	_kana_SHORG	# ）
+		CALL	_subRIGHT
+
+endfunc
+
+func _TABLE_OS VK_OEM_MINUS # - _
+	SETVAR0 _kana_TYOU
+	SETVAR1 _kana_LCBRA # {
+	SETVAR2 _kana_LCBRA # {
+	SETVAR3 _kana_SHORG
+	CALL	_subRIGHT
+endfunc
+
+
+func _TABLE_OS VK_OEM_PLUS # = +
+	SETVAR0 _kana_ORG
+	SETVAR1 _kana_RCBRA # }
+	SETVAR2 _kana_RCBRA # }
+	SETVAR3 _kana_SHORG
+	CALL	_subRIGHT
+endfunc
+
+
+#------------------------------------------------------------------------------
+# 親指シフトキー
+#------------------------------------------------------------------------------
+
+# 親指シフトキーはいくつでも設定できます
+
+# 左親指シフト1
+func _TABLE_OS	LOS_KEYCODE1
+
+		ifsw LOS_ALT_PATCH_ENABLE1
+		# 左親指シフトキーに ALT を割り当てた場合の処理。かなり強引。
+				IF_UP	10
+				RAWUP VK_LMENU
+			LABEL	10
+		endif
+
+		ALLOCVSTATE	0
+		SETGSTATE	_gs_ISLEFT	# 左
+		SETVAR0	LOS_SHARE_FUNC1
+		CALL	_subExecOS
+endfunc
+
+
+# 左親指シフト2
+ifsw LOS_KEYCODE2
+	func _TABLE_OS	LOS_KEYCODE2
+		ALLOCVSTATE	0
+		SETGSTATE	_gs_ISLEFT	# 左
+		SETVAR0	LOS_SHARE_FUNC2
+		CALL	_subExecOS
+	endfunc
+endif
+
+
+# 左親指シフト3
+ifsw LOS_KEYCODE3
+	func _TABLE_OS	LOS_KEYCODE3
+		ALLOCVSTATE	0
+		SETGSTATE	_gs_ISLEFT	# 左
+		SETVAR0	LOS_SHARE_FUNC3
+		CALL	_subExecOS
+	endfunc
+endif
+
+
+# 右親指シフト1
+func _TABLE_OS	ROS_KEYCODE1
+		ALLOCVSTATE	0
+		RESETGSTATE	_gs_ISLEFT	# 右
+		SETVAR0	ROS_SHARE_FUNC1
+		CALL	_subExecOS
+endfunc
+
+
+# 右親指シフト2
+ifsw ROS_KEYCODE2
+	func _TABLE_OS	ROS_KEYCODE2
+		ALLOCVSTATE	0
+		RESETGSTATE	_gs_ISLEFT	# 右
+		SETVAR0	ROS_SHARE_FUNC2
+		CALL	_subExecOS
+	endfunc
+endif
+
+
+# 右親指シフト3
+ifsw ROS_KEYCODE3
+	func _TABLE_OS	ROS_KEYCODE3
+		ALLOCVSTATE	0
+		RESETGSTATE	_gs_ISLEFT	# 右
+		SETVAR0	ROS_SHARE_FUNC3
+		CALL	_subExecOS
+	endfunc
+endif
+
+#-----------------------------------------------------------------------------
+# 「親指シフト」ここまで
+#-----------------------------------------------------------------------------
+
+
+
+
+
+#-----------------------------------------------------------------------------
+# おまけ機能 設定サンプル集
+#-----------------------------------------------------------------------------
+
+# これらの記述は、設定が off (FALSE) の場合メモリにも取り込まれず
+# 負荷になりません。
+
+#-----------------------------------------------------------------------------
+# 特殊キー
+#-----------------------------------------------------------------------------
+
+# [文字] キーで IME on/off
+# WindowsMobile のみ。[es]のテンキーにある[文字]キーは変わりません
+ifsw CSW_SUBST_MOJI_IMESW
+	func TABLE_ALLMODE	VK_F7
+			IF_RWIN	8
+			EXIT	FALSE
+		LABEL	8
+			IF_CTRL	30			# Ctrl 併用時は本来の処理をさせる
+			IF_UP	10
+			# key down
+			# [文字]キーが押されたとき
+			# RWIN + F7 = [Moji]
+			RAWUP	VK_RWIN		# RWIN をキャンセル
+			WINCMD	WINCMD_IMESW	# IME の On/Off
+			RAWDOWN	VK_RWIN
+			EXIT	TRUE
+		LABEL	10
+			# KEYUP時
+			# 何もしない
+			EXIT	TRUE
+		LABEL	30
+			EXIT	FALSE
+	endfunc
+endif
+
+
+# [PrtSc] を指定のキーにします
+ifsw CMAP_PRTSCR_KEYCODE
+	func TABLE_ALLMODE VK_SNAPSHOT	# [PrtSc]
+		PUSHIMM	CMAP_PRTSCR_KEYCODE
+		CALL	_subSync
+	endfunc
+endif
+
+
+# [ScrLk] を指定のキーにします
+ifsw CMAP_SCRLCK_KEYCODE
+	func TABLE_ALLMODE VK_SCROLL	# [ScrLk]
+		PUSHIMM	CMAP_SCRLCK_KEYCODE
+		CALL	_subSync
+	endfunc
+endif
+
+
+# [Pause] を [OK] ボタンにします
+ifsw CSW_SUBST_PAUSE_OK
+	func TABLE_ALLMODE VK_PAUSE		# [Pause]
+		CALL	_subHelper
+		SETMODIFIER	MOD_RWIN
+		SENDKEY	VK_F6		# [OK]
+		EXIT	TRUE
+	endfunc
+endif
+
+
+
+

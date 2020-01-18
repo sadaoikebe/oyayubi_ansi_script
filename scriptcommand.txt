@@ -508,8 +508,8 @@ endif
 #------------------------------------------------------------------------------
 
 # 親指シフトキー
-define	LOS_KEYCODE1	VK_SPACE		# 左親指1 = スペース
-define	ROS_KEYCODE1	VK_RCONTROL		# 右親指1 = right ctrl
+define	LOS_KEYCODE1	VK_SPACE	# 左親指1 = スペース
+define	ROS_KEYCODE1	VK_F24		# 右親指1 = right ctrl
 
 # 追加親指シフトキー不要
 define	LOS_KEYCODE2	0				# 左親指2に割り当てるキーコード
@@ -3009,6 +3009,14 @@ endif
 
 # 右親指シフト1
 func _TABLE_OS	ROS_KEYCODE1
+		# IME OFFでスペースに
+		TESTSYSFLAG		SYSFLAG_IME
+		IF_TRUE			40
+		IF_UP			10
+		SENDKEY VK_SPACE
+	LABEL 10
+		EXIT FALSE
+	LABEL 40
 		ALLOCVSTATE	0
 		RESETGSTATE	_gs_ISLEFT	# 右
 		SETVAR0	ROS_SHARE_FUNC1
